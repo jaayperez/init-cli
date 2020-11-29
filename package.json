@@ -8,6 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc && shx rm -rf dist/templates && shx cp -r src/templates dist"
   },
+  "bin": {
+    "init-cli": "./dist/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jaayperez/init-cli.git"
