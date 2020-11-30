@@ -5,9 +5,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as shell from 'shelljs';
 import * as template from './utils/template';
-
 // import * as chalk from 'chalk';
 const chalk = require('chalk');
+import * as yargs from 'yargs';
 
 const CHOICES = fs.readdirSync(path.join(__dirname, 'templates'));
 
@@ -16,12 +16,14 @@ const QUESTIONS = [
     name: 'template',
     type: 'list',
     message: 'What project template would you like to start with?',
-    choices: CHOICES
+    choices: CHOICES,
+    when: () => !yargs.argv['template']
   },
   {
     name: 'name',
     type: 'input',
-    message: 'Project name:'
+    message: 'Project name:',
+    when: () => !yargs.argv['name']
   }];
 
 const CURR_DIR = process.cwd();
@@ -35,6 +37,8 @@ export interface CliOptions {
 
 inquirer.prompt(QUESTIONS)
   .then(answers => {
+
+    answers = Object.assign({}, answers, yargs.argv);
 
     const projectChoice = answers['template'];
     const projectName = answers['name'];
