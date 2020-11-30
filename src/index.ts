@@ -3,6 +3,7 @@
 import * as inquirer from 'inquirer';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as shell from 'shelljs';
 import * as template from './utils/template';
 
 // import * as chalk from 'chalk';
@@ -50,6 +51,8 @@ inquirer.prompt(QUESTIONS)
     createProject(targetPath);
     createDirectoryContents(templatePath, projectName);
 
+    postProcess(options);
+
     console.log(options);
   });
 
@@ -60,6 +63,19 @@ function createProject(projectPath: string) {
   }
 
   fs.mkdirSync(projectPath);
+
+  return true;
+}
+
+function postProcess(options: CliOptions) {
+  const isNode = fs.existsSync(path.join(options.templatePath, 'package.json'));
+  if (isNode) {
+    shell.cd(options.targetPath);
+    const result = shell.exec('npm install');
+    if (result.code !== 0) {
+      return false;
+    }
+  }
 
   return true;
 }
@@ -83,7 +99,7 @@ function createDirectoryContents(templatePath: string, projectName: string) {
       // read file content and transform it using template engine
       let contents = fs.readFileSync(origFilePath, 'utf8');
 
-      contents = template.render(contents, {projectName});
+      contents = template.render(contents, { projectName });
 
       // write file to destination folder
       const writePath = path.join(CURR_DIR, projectName, file);
