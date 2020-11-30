@@ -3,6 +3,7 @@
 import * as inquirer from 'inquirer';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as template from './utils/template';
 
 // import * as chalk from 'chalk';
 const chalk = require('chalk');
